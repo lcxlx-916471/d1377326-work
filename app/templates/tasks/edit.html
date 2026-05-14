@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0">編輯任務</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('task.edit', id=task.id) }}" method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">任務名稱</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ task.title }}" required autofocus>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ url_for('task.index') }}" class="btn btn-secondary">取消</a>
+                        <button type="submit" class="btn btn-primary">儲存變更</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

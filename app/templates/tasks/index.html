@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        
+        <!-- 新增任務表單 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <form action="{{ url_for('task.add') }}" method="POST" class="d-flex gap-2">
+                    <input type="text" name="title" class="form-control" placeholder="輸入新的任務..." required autofocus>
+                    <button type="submit" class="btn btn-primary px-4">新增</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 任務列表卡片 -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white pt-3 pb-0 border-bottom-0">
+                <!-- 篩選頁籤 -->
+                <ul class="nav nav-tabs border-bottom-0">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if current_status == 'all' else '' }}" href="{{ url_for('task.index') }}">全部</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if current_status == '0' else '' }}" href="{{ url_for('task.index', status=0) }}">進行中</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if current_status == '1' else '' }}" href="{{ url_for('task.index', status=1) }}">已完成</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card-body p-0 border-top border-light">
+                <ul class="list-group list-group-flush">
+                    {% if tasks %}
+                        {% for task in tasks %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                            <div class="d-flex align-items-center gap-3 w-100">
+                                <!-- 切換狀態按鈕 -->
+                                <form action="{{ url_for('task.toggle', id=task.id, status=current_status) }}" method="POST" class="m-0">
+                                    <button type="submit" class="btn btn-link p-0 text-decoration-none">
+                                        {% if task.status == 1 %}
+                                            <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                        {% else %}
+                                            <i class="bi bi-circle text-secondary fs-4"></i>
+                                        {% endif %}
+                                    </button>
+                                </form>
+                                
+                                <!-- 任務標題 -->
+                                <span class="fs-5 flex-grow-1 {{ 'task-done' if task.status == 1 else '' }}">
+                                    {{ task.title }}
+                                </span>
+                            </div>
+                            
+                            <!-- 操作按鈕 -->
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('task.edit', id=task.id) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form action="{{ url_for('task.delete', id=task.id, status=current_status) }}" method="POST" class="m-0" onsubmit="return confirm('確定要刪除這個任務嗎？');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item text-center text-muted py-5">
+                            目前沒有任務，趕快新增一個吧！
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
